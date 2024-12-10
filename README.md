@@ -1,7 +1,7 @@
 # pid-reservation-groupe
 Application de gestion de réservations
-Springboot - Vue
-Grouoe : 
+Springboot - Vue 
+Groupe : 
   - Aktan Stéphane
   - Bah Elhadj S.
   - Dugic Nermina
