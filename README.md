@@ -1,6 +1,8 @@
-pid-reservation-groupe
-Application de gestion de réservations Springboot - Vue Groupe :
+# Springboot et Vue.js
+Application de gestion de réservations Springboot
 
+
+### Équipe :
 - Aktan Stéphane
 - Bah Elhadj S.
 - Dugic Nermina
