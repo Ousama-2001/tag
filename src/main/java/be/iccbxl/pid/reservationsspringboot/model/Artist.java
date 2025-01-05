@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Data
-@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
+@NoArgsConstructor // (force = true, access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "artists")
 public class Artist {
