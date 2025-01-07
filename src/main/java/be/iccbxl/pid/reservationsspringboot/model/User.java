@@ -1,18 +1,21 @@
 package be.iccbxl.pid.reservationsspringboot.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String login;
     private String password;
@@ -26,6 +29,9 @@ public class User {
 
     private LocalDateTime created_at;
 
+    @ManyToMany(mappedBy = "users")
+    private List<Role> roles = new ArrayList<>();
+
     // Problème avec lombok !
     public String getPassword() {
         return password;
@@ -33,6 +39,28 @@ public class User {
 
     public UserRole getRole() {
         return role;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public User addRole(Role role) {
+        if (!this.roles.contains(role)) {
+            this.roles.add(role);
+            role.addUser(this);
+        }
+
+        return this;
+    }
+
+    public User removeRole(Role role) {
+        if (this.roles.contains(role)) {
+            this.roles.remove(role);
+            role.getUsers().remove(this);
+        }
+
+        return this;
     }
 
     @Override
