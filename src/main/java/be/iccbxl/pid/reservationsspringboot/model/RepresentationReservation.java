@@ -21,6 +21,9 @@ public class RepresentationReservation {
     @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 
-    private Integer priceId;
+    @ManyToOne
+    @JoinColumn(name = "price_id", nullable = false)
+    private Price price;
+
     private Integer quantity;
 }
