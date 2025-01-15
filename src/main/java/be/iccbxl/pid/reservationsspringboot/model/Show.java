@@ -51,6 +51,10 @@ public class Show {
     @ManyToMany(mappedBy = "shows")
     private List<ArtistType> artistTypes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
+
     public Show() {
     }
 

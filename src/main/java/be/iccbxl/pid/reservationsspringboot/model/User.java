@@ -35,6 +35,9 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private List<Representation> representations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
     // Problème avec lombok !
     public String getPassword() {
         return password;
