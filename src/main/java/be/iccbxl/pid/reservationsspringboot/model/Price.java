@@ -25,4 +25,7 @@ public class Price {
 
     @OneToMany(mappedBy = "price")
     private List<RepresentationReservation> representationReservations = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "prices")
+    private List<Show> shows = new ArrayList<>();
 }

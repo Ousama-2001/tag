@@ -2,11 +2,13 @@ package be.iccbxl.pid.reservationsspringboot.model;
 
 import com.github.slugify.Slugify;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "shows")
 public class Show {
@@ -31,7 +33,12 @@ public class Show {
     private Location location;
 
     private boolean bookable;
-    private double price;
+
+    @ManyToMany
+    @JoinTable(name = "show_price",
+            joinColumns = @JoinColumn(name = "show_id"),
+            inverseJoinColumns = @JoinColumn(name = "price_id"))
+    private List<Price> prices = new ArrayList<>();
 
     /**
      * Date de création du spectacle
@@ -58,8 +65,7 @@ public class Show {
     public Show() {
     }
 
-    public Show(String title, String description, String posterUrl, Location location, boolean bookable,
-                double price, List<Representation> representations) {
+    public Show(String title, String description, String posterUrl, Location location, boolean bookable, List<Price> prices, List<Representation> representations) {
         Slugify slg = new Slugify();
 
         this.slug = slg.slugify(title);
@@ -68,7 +74,7 @@ public class Show {
         this.posterUrl = posterUrl;
         this.location = location;
         this.bookable = bookable;
-        this.price = price;
+        this.prices = prices;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = null;
         this.representations = representations;
@@ -132,12 +138,12 @@ public class Show {
         this.bookable = bookable;
     }
 
-    public double getPrice() {
-        return price;
+    public List<Price> getPrices() {
+        return prices;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPrices(List<Price> prices) {
+        this.prices = prices;
     }
 
     public LocalDateTime getUpdatedAt() {
@@ -205,7 +211,7 @@ public class Show {
     public String toString() {
         return "Show [id=" + id + ", slug=" + slug + ", title=" + title
                 + ", description=" + description + ", posterUrl=" + posterUrl + ", location="
-                + location + ", bookable=" + bookable + ", price=" + price
+                + location + ", bookable=" + bookable + ", prices=" + prices.size()
                 + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", representations=" + representations.size() + "]";
     }
 
