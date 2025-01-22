@@ -6,7 +6,6 @@ CREATE TABLE `shows`
     `description` longtext,
     `poster_url`  varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `bookable`    tinyint(1)                              NOT NULL,
-    `price`       decimal(10, 2)                          DEFAULT NULL,
     `created_at`  datetime(6)                             NOT NULL,
     `updated_at`  datetime(6)                             DEFAULT NULL,
     `location_id` int(11)                                 DEFAULT NULL,
