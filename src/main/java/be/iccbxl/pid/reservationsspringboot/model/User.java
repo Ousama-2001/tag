@@ -1,9 +1,7 @@
 package be.iccbxl.pid.reservationsspringboot.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,6 +47,10 @@ public class User {
 
     public List<Role> getRoles() {
         return roles;
+    }
+
+    public String getLogin() {
+        return this.login;
     }
 
     public User addRole(Role role) {

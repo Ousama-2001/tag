@@ -30,7 +30,4 @@ public class Reservation {
     @OneToMany(mappedBy = "reservation")
     private List<RepresentationReservation> representationReservations = new ArrayList<>();
 
-    public Reservation() {
-    }
-
 }
