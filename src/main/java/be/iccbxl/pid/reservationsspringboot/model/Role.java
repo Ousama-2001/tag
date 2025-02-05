@@ -1,9 +1,7 @@
 package be.iccbxl.pid.reservationsspringboot.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,6 @@ public class Role {
     public List<User> getUsers() {
         return users;
     }
-
 
 
     public Role addUser(User user) {
