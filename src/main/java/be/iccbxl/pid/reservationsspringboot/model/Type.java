@@ -1,7 +1,6 @@
 package be.iccbxl.pid.reservationsspringboot.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor // (force = true, access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "types")
 public class Type {
