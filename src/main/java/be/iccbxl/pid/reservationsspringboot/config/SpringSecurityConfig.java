@@ -39,32 +39,51 @@ public class SpringSecurityConfig {
      */
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
+        System.out.println("📌 Initialisation du UserDetailsService..."); // ✅ Vérification
         return username -> {
+            System.out.println("🔍 Tentative de connexion pour : " + username);
+
             // Recherche de l'utilisateur par son login
             User user = userRepository.findByLogin(username);
+
             if (user == null) {
                 throw new UsernameNotFoundException("Utilisateur non trouvé : " + username);
             }
+
+            System.out.println("✅ Utilisateur trouvé : " + user.getLogin());
+            System.out.println("👤 Rôle de l'utilisateur : " + user.getRole());
+
             // Conversion de l'entité User en UserDetails.
             // on considère que le champ 'role' est un Enum et qu'on doit préfixer le nom du rôle avec "ROLE_"
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
+            // SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
+            String role = (user.getRole() != null) ? user.getRole().name() : "USER";
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getLogin())
                     .password(user.getPassword())
                     .authorities(Collections.singletonList(authority))
                     .build();
         };
+
     }
 
     @Bean
     public SecurityFilterChain configure(final HttpSecurity http) throws Exception {
         return http.cors(Customizer.withDefaults())
-                .csrf(Customizer.withDefaults())
+                //.csrf(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())    //Désactiver la protection des formulaires
+
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/admin").hasRole("ADMIN");
                     auth.requestMatchers("/user").hasRole("MEMBER");
+
+                    //API
+                    auth.requestMatchers("/api/public/**").permitAll(); // Endpoints publics
+                    auth.requestMatchers("/api/admin/**").hasRole("ADMIN"); // Endpoints réservés aux administrateurs
+
                     auth.anyRequest().permitAll();
                 })
+                .httpBasic(Customizer.withDefaults()) // Permet l'authentification de base (utile pour les tests)
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("login")
@@ -73,9 +92,38 @@ public class SpringSecurityConfig {
                         .logoutSuccessUrl("/login?logoutSuccess=true")
                         .deleteCookies("JSESSIONID"))
                 .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login?loginRequired=true")))
+                .build();
+
+        /*return http.cors(Customizer.withDefaults())
+                .csrf(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/error").permitAll();
+                    auth.requestMatchers("/admin").hasRole("ADMIN");
+                    auth.requestMatchers("/user").hasRole("MEMBER");
+                    auth.anyRequest().permitAll();
+                })
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .usernameParameter("login")
+                        .failureUrl("/login?loginError=true")
+                        .defaultSuccessUrl("/home", true)
+                        .successHandler((request, response, authentication) -> {
+                            System.out.println("✅ Connexion réussie pour : " + authentication.getName());
+                            response.sendRedirect("/home");
+                        }))
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logoutSuccess=true")
+                        .deleteCookies("JSESSIONID"))
+                .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(
                                 new LoginUrlAuthenticationEntryPoint("/login?loginRequired=true")))
-                .build();
+                .build();*/
+
+        /*return http
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) // ✅ Désactive toute sécurité temporairement
+                .csrf(csrf -> csrf.disable()) // Désactive CSRF pour éviter d'autres erreurs
+                .build();*/
     }
 
 }
