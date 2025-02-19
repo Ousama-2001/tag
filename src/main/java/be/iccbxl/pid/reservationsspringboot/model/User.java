@@ -1,5 +1,6 @@
 package be.iccbxl.pid.reservationsspringboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +8,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+// @Data
+@Getter
+@Setter
 @NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
@@ -28,9 +31,11 @@ public class User {
     private LocalDateTime created_at;
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
     private List<Role> roles = new ArrayList<>();
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnore
     private List<Representation> representations = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -56,17 +61,18 @@ public class User {
     public User addRole(Role role) {
         if (!this.roles.contains(role)) {
             this.roles.add(role);
-            role.addUser(this);
+            //role.addUser(this);
         }
 
         return this;
     }
 
     public User removeRole(Role role) {
-        if (this.roles.contains(role)) {
+        /*if (this.roles.contains(role)) {
             this.roles.remove(role);
             role.getUsers().remove(this);
-        }
+        }*/
+        this.roles.remove(role);
 
         return this;
     }
