@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor // (force = true, access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "artists")
 public class Artist {
