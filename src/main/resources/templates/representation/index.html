@@ -5,22 +5,43 @@
     <title>Liste des représentations de spectacle</title>
 </head>
 <body>
-<div class="container">
+<div class="container mx-auto py-8">
     <div layout:fragment="content">
-        <h1 th:text="${title}">Liste des représentations de spectacle</h1>
+        <h1 class="text-2xl font-bold mb-6" th:text="${title}">Liste des représentations de spectacle</h1>
 
-        <ul th:unless="${#lists.isEmpty(representations)}">
-            <li th:each="representation : ${representations}">
-                <span th:text="${representation.show.title}">Ayiti</span>
-                <span th:if="${representation.location}"
-                      th:text="' - '+${representation.location.designation}">- Art Center</span>
-                <span th:text="${#temporals.format(representation.when,'dd-MM-yyyy')}">
-			12-10-2012</span>
-                <span th:text="${#temporals.format(representation.when,'HH:mm')}">
-			13:30</span>
-                <a th:href="@{/representations/{id}(id=${representation.id})}">View</a>
-            </li>
-        </ul>
+        <div th:if="${#lists.isEmpty(representations)}">
+            <p class="text-gray-600">Aucune représentation disponible.</p>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(representations)}" class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-3 px-4 text-left">Spectacle</th>
+                    <th class="py-3 px-4 text-left">Lieu</th>
+                    <th class="py-3 px-4 text-left">Date</th>
+                    <th class="py-3 px-4 text-left">Heure</th>
+                    <th class="py-3 px-4"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="representation : ${representations}" class="border-b hover:bg-gray-50">
+                    <td class="py-3 px-4" th:text="${representation.show.title}">Titre</td>
+                    <td class="py-3 px-4">
+                            <span th:if="${representation.location}"
+                                  th:text="${representation.location.designation}">Lieu</span>
+                    </td>
+                    <td class="py-3 px-4" th:text="${#temporals.format(representation.when, 'dd-MM-yyyy')}">12-10-2012
+                    </td>
+                    <td class="py-3 px-4" th:text="${#temporals.format(representation.when, 'HH:mm')}">13:30</td>
+                    <td class="py-3 px-4">
+                        <a th:href="@{/representations/{id}(id=${representation.id})}"
+                           class="text-blue-500 hover:text-blue-700">Voir</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </body>

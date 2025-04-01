@@ -80,8 +80,7 @@ public class ArtistType {
 
     @Override
     public String toString() {
-        return "ArtistType [id=" + id + ", artist=" + artist + ", type=" + type
-                + ", shows=" + shows + "]";
+        return artist.getFirstname() + " " + artist.getLastname() + " (" + type.getType() + ")";
     }
 
 }
