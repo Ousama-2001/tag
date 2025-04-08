@@ -5,29 +5,45 @@
     <title>Fiche d’un artiste</title>
 </head>
 <body>
-<div class="container">
+<div class="max-w-3xl mx-auto px-6 py-8">
     <div id="notification" th:replace="~{main :: notification}"></div>
+
     <div layout:fragment="content">
-        <h1 th:text="|${artist.firstname}  ${artist.lastname}|">Bob Sull</h1>
+        <div class="bg-white border rounded shadow p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-2xl font-semibold text-gray-800"
+                    th:text="|${artist.firstname} ${artist.lastname}|">Bob Sull</h1>
 
-        <!--
-        <div class="actions">
-            <a th:href="@{/artists/{id}/edit(id=${artist.id})}">Edit</a>
-            <form th:id="|deleteForm-${artist.id}|"
-                  th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete">
-                <a href="#" th:onclick="|if(confirm('Confirm delete artist #${artist.id}'))
-	        		document.getElementById('deleteForm-${artist.id}').submit();
-	         		return false;|">Delete</a>
-            </form>
+                <div class="flex items-center gap-4">
+                    <a th:href="@{/artists/{id}/edit(id=${artist.id})}"
+                       class="text-sm text-yellow-600 hover:underline">Modifier</a>
+
+                    <form th:id="|deleteForm-${artist.id}|"
+                          th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete">
+                        <a href="#"
+                           th:onclick="|if(confirm('Supprimer l\'artiste #${artist.id} ?')) document.getElementById('deleteForm-${artist.id}').submit(); return false;|"
+                           class="text-sm text-red-600 hover:underline">Supprimer</a>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-lg font-medium text-gray-700 mb-2">Types associés :</h2>
+                <ul class="list-disc list-inside text-gray-600 space-y-1"
+                    th:unless="${#lists.isEmpty(artist.types)}">
+                    <li th:each="type : ${artist.types}" th:text="${type.type}">Comédien</li>
+                </ul>
+
+                <p th:if="${#lists.isEmpty(artist.types)}" class="text-gray-500 italic">
+                    Aucun type associé à cet artiste.
+                </p>
+            </div>
+
+            <div class="mt-6">
+                <a th:href="@{/artists}"
+                   class="text-sm text-blue-600 hover:underline">&larr; Retour à la liste des artistes</a>
+            </div>
         </div>
-        -->
-
-        <h2>Liste des types</h2>
-        <ul th:unless="${#lists.isEmpty(artist.types)}">
-            <li th:each="type : ${artist.types}" th:text="${type.type}">Type</li>
-        </ul>
-
-        <nav><a th:href="@{/artists}">Retour à l'index</a></nav>
     </div>
 </div>
 </body>
