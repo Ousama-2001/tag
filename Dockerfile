@@ -2,7 +2,7 @@ FROM openjdk:21-slim
 LABEL authors="tnguy"
 
 # Argument pour le chemin du fichier JAR généré
-ARG JAR_FILE=target/*.jar
+ARG JAR_FILE=target/reservationsspringboot-0.0.1-SNAPSHOT.jar
 
 # Copier le JAR dans l'image et le renommer pour plus de simplicité
 COPY ${JAR_FILE} app.jar
