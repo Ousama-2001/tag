@@ -7,6 +7,7 @@ Ce projet a été réalisé dans le cadre du cours Projet d'intégration de Dév
 ## Membres du groupe de travail:
 
 - Aktan Stéphane
+- Amankour Mohamed
 - Bah Elhadj S.
 - Dugic Nermina
 - Nguyen Duy Anh
