@@ -60,4 +60,7 @@ Ce projet a été réalisé dans le cadre du cours Projet d'intégration de Dév
 5. **Accéder à l'application :**
    Ouvrez http://localhost:8080 dans votre navigateur.
 
+6. **Partie front-end en cour (vue.js)**
+   https://github.com/CyberAkr/pid-reservation-grp-front
+
 
