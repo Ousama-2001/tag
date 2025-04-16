@@ -105,26 +105,27 @@
                         </li>
                     </ul>
                 </div>
-            </div>
-            <!-- Mots-clés -->
-            <div class="mb-10">
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">Mots-clés</h2>
-                <ul class="flex flex-wrap gap-2">
-                    <li th:each="tag : ${show.tags}"
-                        class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                        th:text="${tag.tag}">Mot-clé</li>
-                </ul>
-            </div>
-            <!-- Ajout d'un mot-clé (administrateur uniquement) -->
-            <div class="mb-10" sec:authorize="hasRole('ADMIN')">
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">Ajouter un mot-clé</h2>
-                <form th:action="@{/shows/{id}/tags(id=${show.id})}" th:object="${newTag}" method="post" class="flex gap-2">
-                    <input type="text" th:field="*{tag}" placeholder="Nouveau mot-clé"
-                           class="px-3 py-2 border rounded w-64" />
-                    <button type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Ajouter</button>
-                </form>
-            </div>
+                <!-- Mots-clés -->
+                <div class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-3">Mots-clés</h2>
+                    <ul class="flex flex-wrap gap-2">
+                        <li th:each="tag : ${show.tags}"
+                            class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium"
+                            th:text="${tag.tag}">Mot-clé
+                        </li>
+                    </ul>
+                    <p th:if="${#lists.isEmpty(show.tags)}" class="italic text-gray-400">Aucun mot-clé associé.</p>
+                </div>
+                <!-- Ajout de mot-clé (admin uniquement) -->
+                <div th:if="${#authorization.expression('isAuthenticated() and hasRole(''ADMIN'')')}" class="mt-4">
+                    <form th:action="@{/shows/{id}/tags/add(id=${show.id})}" method="post" class="flex items-center gap-2">
+                        <label for="tag" class="text-sm">Ajouter un mot-clé :</label>
+                        <input type="text" id="tag" name="tag" required maxlength="30"
+                               class="border border-gray-300 rounded px-2 py-1 text-sm">
+                        <button type="submit"
+                                class="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700 transition">Ajouter</button>
+                    </form>
+                </div>
 
         </div>
 

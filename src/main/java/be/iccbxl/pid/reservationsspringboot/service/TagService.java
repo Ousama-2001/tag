@@ -24,4 +24,5 @@ public class TagService {
         tagRepository.findAll().forEach(tags::add);
         return tags;
     }
+
 }

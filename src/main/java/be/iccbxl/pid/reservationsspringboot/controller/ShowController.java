@@ -3,12 +3,15 @@ package be.iccbxl.pid.reservationsspringboot.controller;
 import be.iccbxl.pid.reservationsspringboot.model.Artist;
 import be.iccbxl.pid.reservationsspringboot.model.ArtistType;
 import be.iccbxl.pid.reservationsspringboot.model.Show;
+import be.iccbxl.pid.reservationsspringboot.model.Tag;
 import be.iccbxl.pid.reservationsspringboot.service.ShowService;
+import be.iccbxl.pid.reservationsspringboot.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import java.util.TreeMap;
 public class ShowController {
     @Autowired
     ShowService service;
+    TagService tagService;
 
     @GetMapping("/shows")
     public String index(Model model, @RequestParam(value = "keyword", required = false) String keyword) {
@@ -58,6 +62,22 @@ public class ShowController {
         model.addAttribute("title", "Fiche d'un spectacle");
 
         return "show/show";
+    }
+    @PostMapping("/shows/{id}/tags/add")
+    public String addTagToShow(@PathVariable("id") String id, @RequestParam("tag") String tagValue) {
+        Show show = service.get(id);
+        if (show == null) {
+            return "redirect:/shows";
+        }
+
+        // Crée un tag ou récupère s’il existe déjà
+        Tag tag = tagService.createTag(tagValue);
+
+        // Ajoute le tag au show
+        show.getTags().add(tag);
+        service.update(show.getId().toString(), show);
+
+        return "redirect:/shows/" + id;
     }
 
 

@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name = "tags", uniqueConstraints = {
         @UniqueConstraint(columnNames = "tag")
 })
+
 public class Tag {
 
     @Id
