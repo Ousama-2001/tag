@@ -48,5 +48,8 @@ public class ShowService {
     public List<Show> getFromLocation(Location location) {
         return repository.findByLocation(location);
     }
+    public List<Show> searchByKeyword(String keyword) {
+        return repository.findByTagKeyword(keyword);
+    }
 
 }

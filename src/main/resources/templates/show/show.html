@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+<html xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layouts/main}">
 <head>
     <title th:text="${show.title}">Fiche d’un spectacle</title>
@@ -87,6 +87,7 @@
                     </ul>
                 </div>
 
+
                 <div th:if="${collaborateurs['scénographe'] != null and !#lists.isEmpty(collaborateurs['scénographe'])}">
                     <p class="font-semibold text-gray-800 mb-1">Metteur(s) en scène :</p>
                     <ul class="list-disc list-inside">
@@ -105,6 +106,26 @@
                     </ul>
                 </div>
             </div>
+            <!-- Mots-clés -->
+            <div class="mb-10">
+                <h2 class="text-2xl font-bold text-gray-800 mb-3">Mots-clés</h2>
+                <ul class="flex flex-wrap gap-2">
+                    <li th:each="tag : ${show.tags}"
+                        class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                        th:text="${tag.tag}">Mot-clé</li>
+                </ul>
+            </div>
+            <!-- Ajout d'un mot-clé (administrateur uniquement) -->
+            <div class="mb-10" sec:authorize="hasRole('ADMIN')">
+                <h2 class="text-2xl font-bold text-gray-800 mb-3">Ajouter un mot-clé</h2>
+                <form th:action="@{/shows/{id}/tags(id=${show.id})}" th:object="${newTag}" method="post" class="flex gap-2">
+                    <input type="text" th:field="*{tag}" placeholder="Nouveau mot-clé"
+                           class="px-3 py-2 border rounded w-64" />
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Ajouter</button>
+                </form>
+            </div>
+
         </div>
 
         <!-- Retour -->

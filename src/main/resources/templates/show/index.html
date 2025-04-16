@@ -7,6 +7,14 @@
 <body>
 <div class="max-w-7xl mx-auto px-6 py-10">
     <div layout:fragment="content">
+        <form th:action="@{/shows}" method="get" class="mb-4">
+            <input type="text" name="keyword" placeholder="Rechercher par mot-clé"
+                   class="px-3 py-2 border rounded w-64" />
+            <button type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Rechercher</button>
+        </form>
+        <p th:if="${resultCount != null}" th:text="'Nombre de résultats : ' + ${resultCount}"></p>
+
 
         <!-- Titre -->
         <div class="mb-10">
