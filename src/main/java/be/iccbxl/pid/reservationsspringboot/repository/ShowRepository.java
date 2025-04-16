@@ -16,4 +16,5 @@ public interface ShowRepository extends CrudRepository<Show, Long> {
     List<Show> findByLocation(Location location);
     @Query("SELECT s FROM Show s JOIN s.tags t WHERE t.tag LIKE %:keyword%")
     List<Show> findByTagKeyword(@Param("keyword") String keyword);
+
 }
