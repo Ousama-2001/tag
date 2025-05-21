@@ -1,0 +1,6 @@
+ALTER TABLE `artists`
+    ADD COLUMN `troupe_id` BIGINT NULL,
+  ADD CONSTRAINT `FK_ARTIST_TROUPE`
+    FOREIGN KEY (`troupe_id`) REFERENCES `troupes` (`id`)
+    ON UPDATE CASCADE
+       ON DELETE RESTRICT;

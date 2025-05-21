@@ -1,7 +1,9 @@
 package be.iccbxl.pid.reservationsspringboot.controller;
 
 import be.iccbxl.pid.reservationsspringboot.model.Artist;
+import be.iccbxl.pid.reservationsspringboot.model.Troupe;
 import be.iccbxl.pid.reservationsspringboot.service.ArtistService;
+import be.iccbxl.pid.reservationsspringboot.service.TroupeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,26 +18,42 @@ import java.util.List;
 @Controller
 public class ArtistController {
     @Autowired
-    ArtistService service;
+    private ArtistService service;
+
+    @Autowired
+    private TroupeService troupeService;
 
     @GetMapping("/artists")
     public String index(Model model) {
         List<Artist> artists = service.getAllArtists();
-
         model.addAttribute("artists", artists);
         model.addAttribute("title", "Liste des artistes");
-
         return "artist/index";
     }
 
     @GetMapping("/artists/{id}")
     public String show(Model model, @PathVariable("id") long id) {
         Artist artist = service.getArtist(id);
-
         model.addAttribute("artist", artist);
         model.addAttribute("title", "Fiche d'un artiste");
 
+        // Pour l'affichage de la troupe (nom + logo)
+        model.addAttribute("troupe", artist.getTroupe());
+
+        // Pour remplir la liste déroulante d'affiliation
+        List<Troupe> troupes = troupeService.getAllTroupes();
+        model.addAttribute("troupes", troupes);
+
         return "artist/show";
+    }
+
+    @PostMapping("/artists/{id}/affect-troupe")
+    public String assignTroupe(@PathVariable long id,
+                               @RequestParam(value = "troupeId", required = false) Long troupeId,
+                               RedirectAttributes redirAttrs) {
+        service.assignToTroupe(id, troupeId);
+        redirAttrs.addFlashAttribute("successMessage", "Affectation mise à jour.");
+        return "redirect:/artists/" + id;
     }
 
     @GetMapping("/artists/{id}/edit")

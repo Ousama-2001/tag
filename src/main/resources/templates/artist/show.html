@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       layout:decorate="~{layouts/main}">
 <head>
-    <title>Fiche d’un artiste</title>
+    <title th:text="${artist.firstname + ' ' + artist.lastname}">Fiche d’un artiste</title>
 </head>
 <body>
 <div class="max-w-3xl mx-auto px-6 py-8">
@@ -10,39 +12,102 @@
 
     <div layout:fragment="content">
         <div class="bg-white border rounded shadow p-6">
+
+            <!-- Entête -->
             <div class="flex items-center justify-between mb-4">
                 <h1 class="text-2xl font-semibold text-gray-800"
-                    th:text="|${artist.firstname} ${artist.lastname}|">Bob Sull</h1>
-
+                    th:text="${artist.firstname + ' ' + artist.lastname}">
+                    Nom Artiste
+                </h1>
                 <div class="flex items-center gap-4">
                     <a th:href="@{/artists/{id}/edit(id=${artist.id})}"
-                       class="text-sm text-yellow-600 hover:underline">Modifier</a>
-
+                       sec:authorize="hasRole('ADMIN')"
+                       class="text-sm text-yellow-600 hover:underline">
+                        Modifier
+                    </a>
                     <form th:id="|deleteForm-${artist.id}|"
-                          th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete">
+                          th:action="@{/artists/{id}(id=${artist.id})}"
+                          method="post"
+                          sec:authorize="hasRole('ADMIN')">
+                        <input type="hidden" name="_method" value="delete"/>
                         <a href="#"
                            th:onclick="|if(confirm('Supprimer l\'artiste #${artist.id} ?')) document.getElementById('deleteForm-${artist.id}').submit(); return false;|"
-                           class="text-sm text-red-600 hover:underline">Supprimer</a>
+                           class="text-sm text-red-600 hover:underline">
+                            Supprimer
+                        </a>
                     </form>
                 </div>
             </div>
 
-            <div>
-                <h2 class="text-lg font-medium text-gray-700 mb-2">Types associés :</h2>
-                <ul class="list-disc list-inside text-gray-600 space-y-1"
-                    th:unless="${#lists.isEmpty(artist.types)}">
-                    <li th:each="type : ${artist.types}" th:text="${type.type}">Comédien</li>
-                </ul>
+            <!-- Section Troupe -->
+            <div class="mb-6">
+                <h2 class="text-lg font-medium text-gray-700 mb-2">Troupe :</h2>
+                <p>
+    <span th:if="${artist.troupe != null}">
+      <img
+              th:src="@{/artists/{id}/logo(id=${artist.id})}"
+              th:alt="${artist.troupe.name}"
+              width="50"
+              class="inline-block mr-2"/>
+      <span th:text="${artist.troupe.name}">Nom de la troupe</span>
+    </span>
+                    <span th:unless="${artist.troupe != null}"
+                          class="italic text-gray-500">
+      Non affilié
+    </span>
+                </p>
+            </div>
 
-                <p th:if="${#lists.isEmpty(artist.types)}" class="text-gray-500 italic">
+            <!-- Formulaire d’affectation (ADMIN uniquement) -->
+            <div sec:authorize="hasRole('ADMIN')" class="mb-6">
+                <form th:action="@{/artists/{id}/affect-troupe(id=${artist.id})}"
+                      method="post"
+                      class="flex items-center gap-2">
+                    <label for="troupeSelect" class="text-sm">Affecter à une troupe :</label>
+                    <select id="troupeSelect"
+                            name="troupeId"
+                            class="border border-gray-300 rounded px-2 py-1 text-sm">
+                        <option value=""
+                                th:text="'-- Non affilié --'"
+                                th:selected="${artist.troupe == null}">
+                        </option>
+                        <option th:each="t : ${troupes}"
+                                th:value="${t.id}"
+                                th:text="${t.name}"
+                                th:selected="${artist.troupe != null and artist.troupe.id == t.id}">
+                        </option>
+                    </select>
+                    <button type="submit"
+                            class="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700 transition">
+                        Enregistrer
+                    </button>
+                </form>
+            </div>
+
+            <!-- Types associés -->
+            <div class="mb-6">
+                <h2 class="text-lg font-medium text-gray-700 mb-2">Types associés :</h2>
+                <ul th:unless="${#lists.isEmpty(artist.types)}"
+                    class="list-disc list-inside text-gray-600 space-y-1">
+                    <li th:each="type : ${artist.types}"
+                        th:text="${type.type}">
+                        Type
+                    </li>
+                </ul>
+                <p th:if="${#lists.isEmpty(artist.types)}"
+                   class="text-gray-500 italic">
                     Aucun type associé à cet artiste.
                 </p>
             </div>
 
-            <div class="mt-6">
+            <!-- Retour -->
+            <div>
                 <a th:href="@{/artists}"
-                   class="text-sm text-blue-600 hover:underline">&larr; Retour à la liste des artistes</a>
+                   class="text-sm text-blue-600 hover:underline">
+                    &larr; Retour à la liste des artistes
+                </a>
             </div>
+
         </div>
     </div>
 </div>

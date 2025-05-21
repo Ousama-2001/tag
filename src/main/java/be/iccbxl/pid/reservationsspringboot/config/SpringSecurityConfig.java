@@ -3,6 +3,7 @@ package be.iccbxl.pid.reservationsspringboot.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,42 +16,54 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig {
+
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
     @Bean
-    public SecurityFilterChain configure(final HttpSecurity http) throws Exception {
-        return http.cors(Customizer.withDefaults())
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(Customizer.withDefaults())
                 .csrf(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/admin").hasRole("ADMIN");
-                    auth.requestMatchers("/user").hasRole("MEMBER");
-                    auth.anyRequest().permitAll();
-                })
+                .authorizeHttpRequests(auth -> auth
+                        // Restreint tout /artists/** aux ADMIN seulement
+                        .requestMatchers("/artists/**").hasRole("ADMIN")
+                        // Autres règles existantes
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/user").hasRole("MEMBER")
+                        // Tout le reste est public
+                        .anyRequest().permitAll()
+                )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("login")
-                        .failureUrl("/login?loginError=true"))
+                        .failureUrl("/login?loginError=true")
+                )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logoutSuccess=true")
-                        .deleteCookies("JSESSIONID"))
-                .exceptionHandling(exception -> exception
+                        .deleteCookies("JSESSIONID")
+                )
+                .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(
-                                new LoginUrlAuthenticationEntryPoint("/login?loginRequired=true")))
-                .build();
+                                new LoginUrlAuthenticationEntryPoint("/login?loginRequired=true")
+                        )
+                );
+
+        return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
-        AuthenticationManagerBuilder authMngrBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authMngrBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
-
-        return authMngrBuilder.build();
+    public AuthenticationManager authenticationManager(HttpSecurity http,
+                                                       BCryptPasswordEncoder encoder) throws Exception {
+        AuthenticationManagerBuilder auth =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        auth.userDetailsService(customUserDetailsService)
+                .passwordEncoder(encoder);
+        return auth.build();
     }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
